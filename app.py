@@ -48,14 +48,18 @@ def tflite_detect_image(model_path, image_path, label_path, min_conf=0.5):
     # Loop over all detections and find the one with the highest confidence
     for i in range(len(scores)):
         if scores[i] > min_conf and scores[i] > best_score:
-            object_name = labels[int(classes[i])]
-            best_detection = {'object_name': object_name, 'confidence': float(scores[i]), 'bbox': boxes[i].tolist()}
+            fish_detection = labels[int(classes[i])]
+            best_detection = {'fish_detection': fish_detection, 'confidence': float(scores[i]), 'bbox': boxes[i].tolist()}
             best_score = scores[i]
 
     if best_detection is not None:
-        return {"confidence": best_detection['confidence'], "object_name": best_detection['object_name']}
+        return {"confidence": best_detection['confidence'], "fish_detection": best_detection['fish_detection'], "isDetected": True}
     else:
-        return {}
+        return {
+            "confidence": 0.0,
+            "fish_detection": "Cannot detect fish",
+            "isDetected": False
+        }
 
 @app.route('/prediction', methods=['POST'])
 def detect_image():
@@ -80,7 +84,7 @@ def detect_image():
         # Delete the uploaded image
         os.remove(image_path)
 
-        return jsonify({'detections': detections})
+        return jsonify(detections)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
