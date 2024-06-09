@@ -3,6 +3,7 @@ FROM python:3.9-slim
 # Set the working directory in the container
 WORKDIR /usr/src/app
 # Copy the current directory contents into the container at /usr/src/app
+ENV PORT 5000
 COPY . .
 # Install any needed dependencies specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
